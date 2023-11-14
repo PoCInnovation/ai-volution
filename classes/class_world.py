@@ -34,6 +34,7 @@ class class_world():
         self.running = True
         self.size_font = size_font
         self.font = py.font.Font(None, self.size_font)
+        self.place_text_width = self.width // 50
 
         # Scene
         self.scene = scene(1)
@@ -70,27 +71,39 @@ class class_world():
         self.list_impact_red_zone[i][0] += self.list_impact_red_zone[i][1] * self.delta_time
         return self.list_impact_red_zone[i][0]
 
+
+    def place_text_height(self, i: int):
+        return self.height // 50 + self.size_font * i + 5
+
     def draw_impact(self):
         for i in range(len(self.list_impact_co)):
             if self.list_impact_timer_start[i] < self.actual_time // 1000 and self.list_impact_red_zone[i][0] < \
                     self.list_impact_radius[i]:
                 py.draw.circle(self.window, self.grey, self.list_impact_co[i], self.list_impact_radius[i])
         for i in range(len(self.list_impact_co)):
-            if self.list_impact_timer_start[i] < self.actual_time // 1000:
+            if self.list_impact_timer_start[i] + 1 < self.actual_time // 1000:
                 if self.list_impact_red_zone[i][0] < self.list_impact_radius[i]:
                     py.draw.circle(self.window, self.red, self.list_impact_co[i], self.update_red_zone(i))
                 else:
                     py.draw.circle(self.window, self.red, self.list_impact_co[i], self.list_impact_radius[i])
 
-    def draw_time(self):
+    def draw_time(self, place: int):
         timer_text = self.font.render("Time: {} seconds".format(self.actual_time // 1000), True, self.black)
-        self.window.blit(timer_text, (self.width // 2 - timer_text.get_width() // 2,
-                                                self.size_font + 5 - timer_text.get_height() // 2))
-    def draw_game(self):
+        self.window.blit(timer_text, (self.place_text_width, self.place_text_height(place)))
+
+    def draw_text_creature(self, creature_type: str, creature_number: str, type_place: int, number_place: int):
+        fcreature_type = self.font.render("Type: {}".format(creature_type), True, self.black)
+        fcreature_number = self.font.render("Name: {}".format(creature_number), True, self.black)
+
+        self.window.blit(fcreature_type, (self.place_text_width, self.place_text_height(type_place)))
+        self.window.blit(fcreature_number, (self.place_text_width, self.place_text_height(number_place)))
+
+    def draw_game(self, creature_name: str="Not precised", creature_type: str="Not precised"):
         self.window.fill(self.white)
         self.draw_impact()
-        self.draw_time()
-    
+        self.draw_time(0)
+        self.draw_text_creature(creature_type, creature_name, 1, 2)
+
     def draw_endgame(self):
         self.window.fill(self.white)
         self.window.fill(self.white)

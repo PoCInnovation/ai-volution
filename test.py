@@ -1,14 +1,6 @@
 from src.game_scene.game_scene import game_scene
 from classes.class_world import *
-
-def endgame_scene(world):
-    for event in py.event.get():
-        if event.type == py.QUIT:
-            world.running = False
-
-    world.draw_endgame()
-    py.display.flip()
-
+from src.game_scene.endgame import  endgame_scene
 
 def main():
     py.init()
